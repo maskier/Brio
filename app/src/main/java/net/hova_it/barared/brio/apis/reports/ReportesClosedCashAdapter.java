@@ -35,6 +35,13 @@ public class ReportesClosedCashAdapter extends RecyclerView.Adapter<ReportesClos
     private ReportesDAO reportesDAO;
 
 
+    //Mohan Code
+    private  CustomReportOnClickListner customReportOnClickListner;
+
+    public interface CustomReportOnClickListner { void onReportRowClick(View v,int position); }
+
+    public void setCustomReportOnClickListner(CustomReportOnClickListner customReportOnClickListner){ this.customReportOnClickListner = customReportOnClickListner; }
+
 
     public ReportesClosedCashAdapter(Context context, List<Reporte> reportes){
         this.context = context;
@@ -62,7 +69,20 @@ public class ReportesClosedCashAdapter extends RecyclerView.Adapter<ReportesClos
     @Override
     public ClosedCashViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View vItem = LayoutInflater.from(context).inflate(R.layout.report_closedcash_row, parent, false);
-        return new ClosedCashViewHolder(vItem);
+        ClosedCashViewHolder cardView = new ClosedCashViewHolder(vItem);
+
+        vItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(customReportOnClickListner!=null) {
+
+                    customReportOnClickListner.onReportRowClick(view,cardView.getAdapterPosition());
+                }
+            }
+        });
+
+        return cardView;
     }
 
     /**
@@ -80,6 +100,8 @@ public class ReportesClosedCashAdapter extends RecyclerView.Adapter<ReportesClos
         holder.reporte_concepto.setText(reporteHoleder.getConcepto());
         holder.reporte_cantidad.setText(reporteHoleder.getCantidad());
         holder.reporte_hora.setText(reporteHoleder.getHora());
+        holder.getAdapterPosition();
+
 
     }
 
@@ -117,6 +139,7 @@ public class ReportesClosedCashAdapter extends RecyclerView.Adapter<ReportesClos
             reporte_concepto=(TextView)vitem.findViewById(R.id.reporte_concepto);
             reporte_cantidad=(TextView)vitem.findViewById(R.id.reporte_cantidad);
             reporte_hora=(TextView)vitem.findViewById(R.id.reporte_hora);
+
 
         }
 

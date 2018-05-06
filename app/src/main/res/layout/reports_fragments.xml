@@ -1269,6 +1269,197 @@
                     />
 
             </LinearLayout>
+
+
+
+            <!-- Specific Report view -->
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/report_specfic_linear_layout_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/report_specific_round_corner"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/report_specfic_concepto_name_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/report_specfic_concepto_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NAme"
+                        android:textSize="50dp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/report_specific_date_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/report_specfic_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1-2-2013"
+                        android:textSize="30dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/report_specfic_user_linear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/report_specfic_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ajsfvhavsf"
+                        android:textSize="30dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/columnas_specific_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    android:weightSum="3">
+
+                    <Space
+                        android:layout_width="10dp"
+                        android:layout_height="20dp" />
+
+                    <Button
+                        style="@style/BrioButton.Gris"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight=".85"
+                        android:background="@drawable/view_bkg_pleca_inactiva"
+                        android:singleLine="true"
+                        android:text="Hora"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="19dp" />
+
+                    <Button
+                        style="@style/BrioButton.Gris"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1.04"
+                        android:background="@drawable/view_bkg_pleca_inactiva"
+                        android:singleLine="true"
+                        android:text="Cantidad"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="18dp" />
+
+                    <Button
+                        style="@style/BrioButton.Gris"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1.04"
+                        android:background="@drawable/view_bkg_pleca_inactiva"
+                        android:singleLine="true"
+                        android:text="Descripcion"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="18dp" />
+
+
+                </LinearLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/report_specfic_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="visible"
+                    android:scrollbars="vertical"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/report_specfic_entry_row">
+
+                </android.support.v7.widget.RecyclerView>
+
+                <LinearLayout
+                    android:id="@+id/report_specific_total_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    android:layout_marginLeft="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total de salidas:             "
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/report_specific_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="      ajsfvhavsf"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/report_specfic_backButton_linear"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/report_specfic_backButton"
+                        android:layout_width="200dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/round_button"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="   Regresar   "
+                        android:textColor="#ffff"
+                        android:textSize="25dp"
+                        android:textStyle="bold"
+                        android:theme="@style/MyButton" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
 
@@ -1284,6 +1475,9 @@
             android:layout_centerHorizontal="true"
             android:textColor="#8d8181"
             android:textSize="30dp" />
+
+
+
 
     </LinearLayout>
 

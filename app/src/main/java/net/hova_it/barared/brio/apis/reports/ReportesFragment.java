@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -68,7 +69,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
     private ReportesClosedCashAdapter mClosedCashAdapter;
     private ReportesCajaAdapter mCaja;
     private ModelManager modelManager;
-    private List<Reporte> reportList;
+    private List<Reporte> reportList,specific_report_List;
     private List<Ticket> ticketsCaja,ticketsServiciosAutorizados,tVentas,tServicios,tTae,tInternet,tBanco, tSeguros, tWestern;
     private List<TransaccionTarjeta> tTransaccionesTarjeta;
     private View listReport;
@@ -92,7 +93,26 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
     private BrioAlertDialog errorFecha, errorTipoReporte;
 
 
-    public  ReportesFragment(){}
+
+
+    private LinearLayout report_specfic_backButton_linear,report_specific_total_linear,columnas_specific_report,report_specfic_user_linear,
+            report_specific_date_linear,report_specfic_concepto_name_linear,report_specfic_linear_layout_view;
+
+    private List<LinearLayout> specific_report_linear_layouts = new ArrayList<>();
+
+    private SpecificReportAdapter specificReportAdapter;
+    private RecyclerView report_specfic_recyclerview;
+    private TextView report_specfic_concepto_name,report_specfic_date,report_specfic_user,
+            report_specific_total;
+    private Button report_specfic_backButton;
+
+
+    private static final String Report_TAG ="ReportesFragment";
+
+
+    public  ReportesFragment(){
+        Log.d(Report_TAG,"IN report fragment");
+    }
 
     public static ReportesFragment getInstance(int report){
         ReportesFragment reportesFragment = new ReportesFragment();
@@ -192,6 +212,38 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         fechaInicio.requestFocus();
 
 
+        /////////////////////////Row Specific//////////////////////////
+        //mSpecificLinearLayout = (LinearLayout) rootView.findViewById(R.id.report_specfic_linear_layout_view);
+        //mReportSpecificRowRecyclerview = (RecyclerView) rootView.findViewById(R.id.report_specfic_recyclerview);
+
+        report_specfic_linear_layout_view = (LinearLayout) rootView.findViewById(R.id.report_specfic_linear_layout_view);
+//        ScrollView scrollView=(ScrollView) rootView.findViewById(R.id.report_specfic_linear_layout_view) ;
+//        scrollView.setVi
+
+        report_specific_total_linear = (LinearLayout) rootView.findViewById(R.id.report_specific_total_linear);
+        columnas_specific_report = (LinearLayout) rootView.findViewById(R.id.columnas_specific_report);
+        report_specfic_user_linear = (LinearLayout) rootView.findViewById(R.id.report_specfic_user_linear);
+        report_specific_date_linear=(LinearLayout) rootView.findViewById(R.id.report_specific_date_linear);
+        report_specfic_concepto_name_linear = (LinearLayout) rootView.findViewById(R.id.report_specfic_concepto_name_linear);
+
+//        specific_report_linear_layouts.add(report_specfic_backButton_linear);
+//        specific_report_linear_layouts.add(report_specific_total_linear);
+//        specific_report_linear_layouts.add(columnas_specific_report);
+//        specific_report_linear_layouts.add(report_specfic_user_linear);
+//        specific_report_linear_layouts.add(report_specific_date_linear);
+//        specific_report_linear_layouts.add(report_specfic_concepto_name_linear);
+
+        report_specfic_concepto_name = (TextView) rootView.findViewById(R.id.report_specfic_concepto_name);
+        report_specfic_date = (TextView) rootView.findViewById(R.id.report_specfic_date);
+        report_specfic_user = (TextView) rootView.findViewById(R.id.report_specfic_user);
+        report_specific_total = (TextView) rootView.findViewById(R.id.report_specific_total);
+        report_specfic_backButton = (Button) rootView.findViewById(R.id.report_specfic_backButton);
+
+
+        report_specfic_recyclerview = (RecyclerView) rootView.findViewById(R.id.report_specfic_recyclerview);
+
+
+
         fechaFin = (EditText) rootView.findViewById(R.id.fecha_fin);
         fechaFin.setInputType(InputType.TYPE_NULL);
 
@@ -274,6 +326,8 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         llm8.setOrientation(LinearLayoutManager.VERTICAL);
         LinearLayoutManager llm9 = new LinearLayoutManager(getActivity());
         llm9.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager llm10 = new LinearLayoutManager(getContext());
+        report_specfic_recyclerview.setLayoutManager(llm10);
 
         RecyclerViewPos.setLayoutManager(llm2);
         RecyclerViewPos.setHasFixedSize(true);
@@ -299,11 +353,20 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         RecyclerViewWestern.setLayoutManager(llm9);
         RecyclerViewWestern.setHasFixedSize(true);
 
+        ///////////////Mohan Code///////////////
+
+//        report_specfic_recyclerview.setLayoutManager(llm9);
+//        report_specfic_recyclerview.setHasFixedSize(true);
+
         textSinArticulos.setVisibility(View.VISIBLE);
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         //getLoaderManager().initLoader(0, null, this);
+
+
+        //set visiblity off and On for specific linear layouts
+        //setReportSpecificLayoutsVisiblity(View.GONE);
     }
 
     private void fillSpinner(){
@@ -339,6 +402,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
     /**
      * Manejo de listener de UI para el ingreso de informacion requerida para la generacion de reportes.
      */
+    private  int tipoReporte;
     private void generateReport(){
         modelManager = new ModelManager(getContext());
 
@@ -348,7 +412,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         Log.w("Finicio","timestamp "+tFechaInicio);
         Long tFechaFin = Utils.dateToTimeatamp(fechaFinTemp);
         Log.w("Ffin","timestamp "+tFechaFin);
-        int tipoReporte = selecReporte.getSelectedItemPosition();
+        tipoReporte = selecReporte.getSelectedItemPosition();
 
         errorFecha = new BrioAlertDialog((AppCompatActivity) getActivity(), Utils.getString(R.string.report_error_title, getContext()),
                 Utils.getString(R.string.report_error_date, getContext()));
@@ -435,18 +499,33 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                         break;
 
                     case 5://ClosedCash
+                        Log.w(KEY_LOG,"Closed Cash Invoked ");
                         reportList = modelManager.reporte.getReport(tFechaInicio, tFechaFin, tipoReporte);
-                        mClosedCashAdapter = new ReportesClosedCashAdapter(getActivity(), reportList);
+
+                        Log.w(KEY_LOG,"got Report List");
+                        mClosedCashAdapter = new ReportesClosedCashAdapter(getContext(), reportList);
                         mRecyclerView.setAdapter(mClosedCashAdapter);
+
+                        mClosedCashAdapter.setCustomReportOnClickListner(new ReportesClosedCashAdapter.CustomReportOnClickListner() {
+                            @Override
+                            public void onReportRowClick(View v,int position) {
+
+                                openSpecificReport(v,position);
+
+                            }
+                        });
+
+
                         textSinArticulos.setVisibility(View.GONE);
                         columnasVendidos.setVisibility(View.GONE);
                         columnasCaja.setVisibility(View.GONE);
                         columnas_closedcash.setVisibility(View.VISIBLE);
-                        columnasGanancias.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.VISIBLE);
                         listResults.setVisibility(View.VISIBLE);
+                        columnasGanancias.setVisibility(View.GONE);
                         listaDetalles.setVisibility(View.GONE);
                         loading.setVisibility(View.GONE);
+                        setReportSpecificLayoutsVisiblityOFF();
 
 
                         ((BrioActivityMain)getActivity()).enableMenus();
@@ -631,6 +710,93 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         }
     }
 
+    private void openSpecificReport(View v, int position) {
+            try {
+                //String text = ((TextView)v.findViewById(R.id.reporte_user_id)).getText().toString();
+                System.out.println("-----> user " + reportList.get(position).getIdUsuario());
+                //specific_report_List = modelManager.reporte.getSpecificReport("26-04-2018",reportList.get(position).getIdUsuario());
+                specific_report_List = new ArrayList<>();
+
+                Reporte reporte;
+
+                String concepto_name = ((TextView)v.findViewById(R.id.reporte_concepto)).getText().toString();
+
+                for(int i=0;i<4;i++) {
+                    reporte = new Reporte();
+                    reporte.setNombreUsuario("Administrador");
+                    reporte.setFecha("26-04-2018");
+                    reporte.setHora("05:21:43");
+                    reporte.setCantidad("50.0");
+                    reporte.setDescripcion("salida");
+
+                    reporte.setConcepto(concepto_name);
+                    //Log.w("REPORTE", Utils.pojoToString(reporte));
+
+                    specific_report_List.add(reporte);
+                }
+
+
+                Log.w(KEY_LOG, "setting view to ON");
+
+                columnas_closedcash.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                //listResults.setVisibility(View.GONE);
+                //setReportSpecificLayoutsVisiblityON();
+                report_specfic_linear_layout_view.setVisibility(View.VISIBLE);
+
+
+
+
+
+                if (specific_report_List != null && specific_report_List.size() > 0) {
+
+//                  set data to textviews
+                    reporte = specific_report_List.get(0);
+                    report_specfic_concepto_name.setText(reporte.getConcepto());
+                    report_specfic_date.setText(reporte.getFecha());
+                    report_specfic_user.setText(reporte.getNombreUsuario());
+
+                    specificReportAdapter = new SpecificReportAdapter(getContext(), specific_report_List);
+                    report_specfic_recyclerview.setAdapter(specificReportAdapter);
+                    report_specfic_recyclerview.setVisibility(View.VISIBLE);
+
+
+                    double total_cantidad = 0.0;
+
+                    for (Reporte r : specific_report_List) {
+                        total_cantidad += Double.parseDouble(r.getCantidad());
+                    }
+
+                    Log.w(KEY_LOG, String.valueOf(total_cantidad));
+                    report_specific_total.setText(String.valueOf(total_cantidad));
+
+                    report_specfic_backButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setReportSpecificLayoutsVisiblityOFF();
+                            tipoReporte = 5;
+                            generateReport();
+
+                        }
+                    });
+
+                    //Set Views visibilty of specific report
+                    //setReportSpecificLayoutsVisiblityON();
+
+
+                    //send specific report list to specific report adapter
+
+
+                } else {
+
+                    Log.w(KEY_LOG, "No specific record found");
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+    }
+
     /**
      * Limpieza de UI.
      */
@@ -659,6 +825,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
         detallesSeguros.setVisibility(View.VISIBLE);
         detallesWestern.setVisibility(View.VISIBLE);
         listaDetalles.setVisibility(View.GONE);
+        setReportSpecificLayoutsVisiblityOFF();//mohan code
         bVentas=false;
         bServicios=false;
         bTae=false;
@@ -1218,6 +1385,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                             mRecyclerViewDetallesSeguros.setVisibility(View.GONE);////////
                             mRecyclerViewDetallesWestern.setVisibility(View.GONE);
                             textSinInformacion.setVisibility(View.VISIBLE);
+                            setReportSpecificLayoutsVisiblityOFF();
                         }
                     } else {
                         detallesVentas.setVisibility(View.VISIBLE);
@@ -1238,6 +1406,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                         mRecyclerViewDetallesWestern.setVisibility(View.GONE);
                         columnasDetallesSeguros.setVisibility(View.GONE);
                         textSinInformacion.setVisibility(View.GONE);
+                        setReportSpecificLayoutsVisiblityOFF();
                     }
 
                     break;
@@ -1268,6 +1437,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                             mRecyclerViewDetallesWestern.setVisibility(View.VISIBLE);
                             columnasDetallesServicios.setVisibility(View.VISIBLE);
                             textSinInformacion.setVisibility(View.GONE);
+                            setReportSpecificLayoutsVisiblityOFF();
                         } else {
                             detallesVentas.setVisibility(View.GONE);
                             detallesServicios.setVisibility(View.GONE);
@@ -1286,6 +1456,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                             mRecyclerViewDetallesSeguros.setVisibility(View.GONE);
                             mRecyclerViewDetallesWestern.setVisibility(View.GONE);/////////
                             textSinInformacion.setVisibility(View.VISIBLE);
+                            setReportSpecificLayoutsVisiblityOFF();
                         }
                     } else {
                         detallesVentas.setVisibility(View.VISIBLE);
@@ -1306,6 +1477,7 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
                         mRecyclerViewDetallesWestern.setVisibility(View.GONE);
                         columnasDetallesSeguros.setVisibility(View.GONE);
                         textSinInformacion.setVisibility(View.GONE);
+                        setReportSpecificLayoutsVisiblityOFF();
                     }
 
                     break;
@@ -1317,4 +1489,20 @@ public class ReportesFragment extends OptionMenuFragment implements View.OnClick
     }
 
 
+    public void setReportSpecificLayoutsVisiblityON() {
+
+        report_specfic_concepto_name_linear.setVisibility(View.VISIBLE);
+        report_specific_total_linear.setVisibility(View.VISIBLE);
+        columnas_specific_report.setVisibility(View.VISIBLE);
+        report_specfic_user_linear.setVisibility(View.VISIBLE);
+        report_specific_date_linear.setVisibility(View.VISIBLE);
+        report_specfic_concepto_name_linear.setVisibility(View.VISIBLE);
+        report_specfic_recyclerview.setVisibility(View.VISIBLE);
+        report_specfic_backButton.setVisibility(View.VISIBLE);
+    }
+
+    public void setReportSpecificLayoutsVisiblityOFF() {
+
+        report_specfic_linear_layout_view.setVisibility(View.GONE);
+    }
 }

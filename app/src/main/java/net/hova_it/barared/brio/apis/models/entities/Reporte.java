@@ -28,10 +28,16 @@ public class Reporte {
     private String nombreUsuario;
     private int orden;
 
+    //Mohan code
+    private String descripcion;
 
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-
-
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
     public Reporte(){}
 

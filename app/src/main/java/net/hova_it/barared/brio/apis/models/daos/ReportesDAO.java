@@ -1,5 +1,7 @@
 package net.hova_it.barared.brio.apis.models.daos;
 
+import android.util.Log;
+
 import net.hova_it.barared.brio.apis.models.entities.Reporte;
 import net.hova_it.barared.brio.apis.sqlite.SQLiteService;
 
@@ -21,6 +23,12 @@ public class ReportesDAO {
      */
     public List<Reporte> getReport(Long fechaInicio, Long fechaFin, int tipoReporte) {
         return sqLiteService.reporte.select(fechaInicio,fechaFin,tipoReporte);
+    }
+
+
+    public List<Reporte> getSpecificReport(String date,int user_id){
+        Log.w("RepositoriesDAO","In get Specific Report");
+        return sqLiteService.reporte.selectSpecificReportByUserID(date,user_id);
     }
 
     /**

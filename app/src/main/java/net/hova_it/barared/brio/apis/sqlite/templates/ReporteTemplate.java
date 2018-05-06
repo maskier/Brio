@@ -29,6 +29,52 @@ public class ReporteTemplate {
         this.query = new SQLiteInit();
     }
 
+
+
+    //Mohgn code
+    public List<Reporte> selectSpecificReportByUserID(String date,int user_id) {
+
+        SQLiteDatabase db=sqLiteService.getReadableDatabase();
+
+        String query = "Select strftime('%d-%m-%Y', datetime(a.timestamp, 'unixepoch', 'localtime')) As Fecha, strftime('%H:%M:%S', a.timestamp, 'unixepoch', 'localtime') As Hora, a.id_usuario, b.nombre As Nombre_Usuario, a.Descripcion,\n" +
+                "\n" +
+                "                a.importe_neto As Cantidad\n" +
+                "\n" +
+                "                From Tickets a\n" +
+                "\n" +
+                "                Left Join Usuarios b On a.id_usuario = b.id_usuario\n" +
+                "\n" +
+                "                                                               Where strftime('%d-%m-%Y', datetime(a.timestamp, 'unixepoch', 'localtime'))  = '26-04-2018' --PARAM DATE\n" +
+                "\n" +
+                "                                                               And a.id_usuario = 1  --PARAM USER\n" +
+                "\n" +
+                "                                                               And a.id_tipo_ticket = 3 --SALIDA\n" +
+                "\n" +
+                "                                                               Order By strftime('%H:%M:%S', a.timestamp, 'unixepoch', 'localtime') asc  ";
+        Cursor resourse = db.rawQuery(query,null);
+
+        List<Reporte> specific_row_report=new ArrayList<>();
+
+        Reporte reporte;
+        while(resourse.moveToNext()) {
+            reporte=new Reporte();
+            reporte.setNombreUsuario(resourse.getString(3));
+            reporte.setFecha(resourse.getString(0));
+            reporte.setHora(resourse.getString(1));
+            reporte.setCantidad(resourse.getString(5));
+            reporte.setDescripcion(resourse.getString(4));
+
+            Log.w("REPORTE", Utils.pojoToString(reporte));
+
+            specific_row_report.add(reporte);
+        }
+
+        Log.w("REPORTE Template", "Got all the Specific rows ");
+        return specific_row_report;
+
+    }
+
+
     public List<Reporte> selectById(Long fechaInicio, Long fechaFin , int idArticulo) {
         long startTime = System.currentTimeMillis(); //todo: reeplazar System.currentTimeMillis() por SystemClock.uptimeMillis()
 
@@ -226,8 +272,11 @@ public class ReporteTemplate {
                         "                LIMIT 1) e\n" +
                         "\n" +
                         "Order By Orden asc";
+                        resourse = db.rawQuery(sql, null);
 
-                resourse = db.rawQuery(sql, null);
+                        break;
+//            case 6:String sql = Log.w("Reporte", "Specific row report");
+//                final String sql = ""
 
         }
 
